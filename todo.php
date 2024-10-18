@@ -29,6 +29,7 @@ class Todo implements \JsonSerializable {
 		return $this->item_id;
 	}
 
+    //Devuelve todos los elementos de la BBDD en forma de array
     public static function DB_selectAll($dbconn){
         $todo_list = array();
         foreach($dbconn->query("SELECT item_id, content FROM todo_list") as $row) {
@@ -36,6 +37,7 @@ class Todo implements \JsonSerializable {
             $new_todo->parametersConstruct($row['item_id'],$row['content']);
             $todo_list[]=$new_todo;
         }
+        return $todo_list;
 
 
     }
