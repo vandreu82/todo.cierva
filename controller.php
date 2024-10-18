@@ -16,7 +16,7 @@
 					$db = new DB();
 					$new_todo = new Todo;
 					$new_todo->jsonConstruct($bodyRequest);
-					$new_todo->insert($dbconn); //A falta de programar el insert
+					$new_todo->insert($db->connection); //A falta de programar el insert
 					$todo_list = Todo::DB_selectAll($db->connection);
 					// $todo_list -> Convertir a json y pasarlo en return_response
 					// return_response(200, "OK", $json_del_array_de_todo);
