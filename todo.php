@@ -4,17 +4,20 @@ class Todo implements \JsonSerializable {
     private int $item_id;
 	private string $content;
 	
+    //Inicializa todas las variables del objeto con las pasadas por parámetros
     public function parametersConstruct(int $item_id, string $content){
         $this->item_id = $item_id;
         $this->content = $content;
     }
 
+    //Inicializa todas las variables con el json pasado por parametro
 	public function jsonConstruct($json) {
         foreach (json_decode($json, true) AS $key => $value) {
             $this->{$key} = $value;
         }
     }
 
+    //Convierte el objeto a un json (jsonEncode)
 	public function jsonSerialize()
     {
         $vars = get_object_vars($this);

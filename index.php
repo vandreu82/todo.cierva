@@ -21,7 +21,8 @@
                     echo "<li>". $row->getItem_id() .". ". $row->getContent() . "</li>";
                 }
                 echo "</ul>";
-            } catch (PDOException $e) {
+            } 
+        catch (PDOException $e) {
                 print "Error!: " . $e->getMessage() . "<br/>";
                 die();
             }
@@ -35,7 +36,7 @@
                 return;
             }
 
-            const url = 'https://todo.cierva/controller.php';  
+            const url = 'http://todo.cierva/controller.php';  
             
             const postData = {
                 content: content
