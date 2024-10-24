@@ -1,6 +1,7 @@
 
 	<?php
 			require "todo.php";
+			require "DB.php";
 		
 		
 			function return_response($status, $statusMessage, $data) {
@@ -16,10 +17,9 @@
 					$db = new DB();
 					$new_todo = new Todo;
 					$new_todo->jsonConstruct($bodyRequest);
-					$new_todo->insert($db->connection); //A falta de programar el insert
+					$new_todo->DB_insert($db->connection); //A falta de programar el insert
 					$todo_list = Todo::DB_selectAll($db->connection);
-					// $todo_list -> Convertir a json y pasarlo en return_response
-					// return_response(200, "OK", $json_del_array_de_todo);
+					return_response(200, "OK", $todo_list);
 					break;
 				default:
 					return_response(405, "Method Not Allowed", null);

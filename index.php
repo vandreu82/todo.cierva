@@ -14,8 +14,8 @@
         require "todo.php";
         try {
                 $db = new DB;
-                echo "<h2 id=\"lista\">TODO</h2>";
-                echo "<ul>";
+                echo "<h2>TODO</h2>";
+                echo "<ul id=\"lista\">";
                 $todo_list = Todo::DB_selectAll($db->connection);
                 foreach ($todo_list as $row) {
                     echo "<li>". $row->getItem_id() .". ". $row->getContent() . "</li>";
@@ -60,7 +60,7 @@
                 data.forEach(item => {
                     var li = document.createElement("li");
                     li.appendChild(document.createTextNode(item.item_id+". "+item.content));
-                    ul.appendChild(li);
+                    lista.appendChild(li);
                 });
             })
             .catch(error => console.error('Error en la solicitud POST:', error));

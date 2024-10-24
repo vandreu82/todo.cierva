@@ -41,7 +41,13 @@ class Todo implements \JsonSerializable {
             $todo_list[]=$new_todo;
         }
         return $todo_list;
-
-
     }
+
+    public function DB_insert($dbconn) {
+        $sql = "INSERT INTO `todo_list` (content) VALUES(?)";
+        $stmt= $dbconn->prepare($sql);
+        $stmt->execute([$this->content]);
+        //$dbconn->prepare($sql)->execute([$this->content]);
+    }
+
 }
