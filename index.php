@@ -29,9 +29,9 @@
     ?>
     <script>
         document.getElementById('guardar').addEventListener('click', function () {
-            const content = document.getElementById('content').value;
+            const contenido = document.getElementById('content').value;
 
-            if (!content) {
+            if (!contenido) {
                 alert('Por favor, introduce un valor.');
                 return;
             }
@@ -39,7 +39,7 @@
             const url = 'http://todo.cierva/controller.php';  
             
             const postData = {
-                content: content
+                content: contenido
             };
 
             // Llamada POST
