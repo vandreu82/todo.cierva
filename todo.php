@@ -50,4 +50,11 @@ class Todo implements \JsonSerializable {
         //$dbconn->prepare($sql)->execute([$this->content]);
     }
 
+    public function DB_delete($dbconn) {
+        $sql = "DELETE FROM todo_list WHERE item_id=?";
+        $stmt= $dbconn->prepare($sql);
+        $stmt->execute([$this->item_id]);
+        //$dbconn->prepare($sql)->execute([$this->content]);
+    }
+
 }

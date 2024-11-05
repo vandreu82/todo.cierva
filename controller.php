@@ -17,7 +17,15 @@
 					$db = new DB();
 					$new_todo = new Todo;
 					$new_todo->jsonConstruct($bodyRequest);
-					$new_todo->DB_insert($db->connection); //A falta de programar el insert
+					$new_todo->DB_insert($db->connection); 
+					$todo_list = Todo::DB_selectAll($db->connection);
+					return_response(200, "OK", $todo_list);
+					break;
+				case 'DELETE':
+					$db = new DB();
+					$new_todo = new Todo;
+					$new_todo->jsonConstruct($bodyRequest);
+					$new_todo->DB_delete($db->connection); 
 					$todo_list = Todo::DB_selectAll($db->connection);
 					return_response(200, "OK", $todo_list);
 					break;
