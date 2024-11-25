@@ -1,18 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: http://todo.terminus.lan");
-header("Access-Control-Allow-Methods: POST, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-	// Termina la ejecución para las solicitudes de verificación (OPTIONS) de CORS
-	exit(0);
-}
-
-
-
 require "todo.php";
 require "DB.php";
-
 
 function return_response($status, $statusMessage, $data)
 {
@@ -21,30 +9,36 @@ function return_response($status, $statusMessage, $data)
 	echo json_encode($data);
 }
 
-$bodyRequest = file_get_contents("php://input");
+try {
+	$db = new DB();
+	$bodyRequest = file_get_contents("php://input");
+	$decodedRequest = json_decode($bodyRequest, true);
 
-switch ($_SERVER['REQUEST_METHOD']) {
-	case 'POST':
-		$db = new DB();
-		$new_todo = new Todo;
-		$new_todo->jsonConstruct($bodyRequest);
-		$new_todo->DB_insert($db->connection);
-		$todo_list = Todo::DB_selectAll($db->connection);
-		return_response(200, "OK", $todo_list);
-		break;
-	case 'DELETE':
-		$db = new DB();
-		$new_todo = new Todo;
-		$new_todo->jsonConstruct($bodyRequest);
-		$new_todo->DB_delete($db->connection);
-		$todo_list = Todo::DB_selectAll($db->connection);
-		return_response(200, "OK", $todo_list);
-		break;
-	default:
-		return_response(405, "Method Not Allowed", null);
-		break;
+	switch ($_SERVER['REQUEST_METHOD']) {
+		case 'POST':
+			$new_todo = new Todo;
+			$new_todo->jsonConstruct($bodyRequest);
+			$new_todo->DB_insert($db->connection);
+			break;
+		case 'PUT':
+			$updated_todo = new Todo;
+			$updated_todo->parametersConstruct($decodedRequest['item_id'], $decodedRequest['content']);
+			$updated_todo->DB_update($db->connection);
+			break;
+		case 'DELETE':
+			$new_todo = new Todo;
+			$new_todo->jsonConstruct($bodyRequest);
+			$new_todo->DB_delete($db->connection);
+			break;
+		default:
+			return_response(405, "Method Not Allowed", null);
+			exit;
+	}
+
+	$todo_list = Todo::DB_selectAll($db->connection);
+	return_response(200, "OK", $todo_list);
+
+} catch (Exception $e) {
+	return_response(500, "Internal Server Error", ["error" => $e->getMessage()]);
 }
-
-
-
 ?>

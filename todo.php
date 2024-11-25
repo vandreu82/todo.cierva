@@ -56,5 +56,12 @@ class Todo implements \JsonSerializable {
         $stmt->execute([$this->item_id]);
         //$dbconn->prepare($sql)->execute([$this->content]);
     }
+    public function DB_update($dbconn)
+    {
+        $sql = "UPDATE todo_list SET content = ? WHERE item_id = ?";
+        $stmt = $dbconn->prepare($sql);
+        $stmt->execute([$this->content, $this->item_id]);
+    }
+
 
 }

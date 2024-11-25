@@ -34,8 +34,12 @@
             $todo_list = Todo::DB_selectAll($db->connection);
             foreach ($todo_list as $row) {
                 // Cada elemento de la lista con un botón para borrar
-                echo "<li>" . $row->getItem_id() . ". " . htmlspecialchars($row->getContent()) .
-                    " <button onclick='borrar(" . $row->getItem_id() . ")'>X</button></li>";
+                echo "<li id='item-" . $row->getItem_id() . "'>" .
+                    "<span class='task-content'>" . $row->getItem_id() . ". " . htmlspecialchars($row->getContent()) . "</span>" .
+                    " <button onclick='editar(" . $row->getItem_id() . ")'>Editar</button>" .
+                    " <button onclick='borrar(" . $row->getItem_id() . ")'>X</button>" .
+                    "</li>";
+
             }
             echo "</ul>";
         } catch (PDOException $e) {
@@ -46,6 +50,11 @@
     </div>
 
     <script>
+        /**
+        * Envía una solicitud al controlador con el método y datos proporcionados.
+        * @param {string} metodo - Método HTTP (POST, DELETE, PUT).
+        * @param {Object} postData - Datos a enviar en el cuerpo de la solicitud.
+        */
         function llamada_a_controller(metodo, postData) {
             const url = 'http://todo.terminus.lan/controller.php';
             // Limpiar la tabla antes de agregar los nuevos datos
@@ -62,20 +71,50 @@
             })
                 .then(response => response.json())  // Convertir la respuesta a JSON
                 .then(data => {
-                    // Agregar cada item al DOM en forma de lista
+                    // Reconstruir la lista de tareas
                     data.forEach(item => {
-                        var li = document.createElement("li");
-                        li.appendChild(document.createTextNode(item.item_id + ". " + item.content + " "));
-                        var button = document.createElement("button");
-                        button.textContent = "X";
-                        button.setAttribute("onclick", "borrar(" + item.item_id + ")");
-                        li.appendChild(button);
+                        const li = document.createElement("li");
+                        li.id = `item-${item.item_id}`;
+                        const span = document.createElement("span");
+                        span.className = "task-content";
+                        span.textContent = `${item.item_id}. ${item.content}`;
+
+                        const editButton = document.createElement("button");
+                        editButton.textContent = "Editar";
+                        editButton.onclick = () => editar(item.item_id);
+
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "X";
+                        deleteButton.onclick = () => borrar(item.item_id);
+
+                        li.appendChild(span);
+                        li.appendChild(editButton);
+                        li.appendChild(deleteButton);
                         lista.appendChild(li);
                     });
                 })
-                .catch(error => console.error('Error en la solicitud POST:', error));
+                .catch(error => console.error('Error en la solicitud:', error));
         }
 
+        /**
+         * Permite editar el contenido de una tarea específica.
+         * @param {number} item_id - ID del elemento a editar.
+         */
+        function editar(item_id) {
+            const item = document.getElementById(`item-${item_id}`);
+            const content = item.querySelector(".task-content").textContent;
+
+            const newContent = prompt("Edita la tarea:", content);
+            if (newContent !== null && newContent.trim() !== "") {
+                const postData = { item_id: item_id, content: newContent };
+                llamada_a_controller("PUT", postData);
+            }
+        }
+
+        /**
+        * Borra una tarea específica de la lista.
+        * @param {number} item_id - ID del elemento a borrar.
+        */
         function borrar(item_id) {
             const postData = {
                 item_id: item_id
