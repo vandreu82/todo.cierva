@@ -47,7 +47,7 @@
 
     <script>
         function llamada_a_controller(metodo, postData) {
-            const url = 'http://todo.cierva/controller.php';
+            const url = 'http://todo.terminus.lan/controller.php';
             // Limpiar la tabla antes de agregar los nuevos datos
             const lista = document.getElementById('lista');
             lista.innerHTML = ''; // Eliminar el contenido previo de la tabla
